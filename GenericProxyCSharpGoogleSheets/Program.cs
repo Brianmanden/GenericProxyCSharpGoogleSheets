@@ -38,7 +38,7 @@ namespace GoogleSheetsAPI4_v1console
             // WIP Google Sheet
             // https://docs.google.com/spreadsheets/d/1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4/edit#gid=0
             string spreadsheetId = "1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4";
-            string writeRange = "Ark1!A2:ZZ";
+            string writeRange = "Ark2!A2:ZZ";
 
             var objList = new List<object>(){ DateTime.Now.ToLocalTime(), "Col2", "Col3", "Col4", "Col5", "My NEW Cell Text" };
 

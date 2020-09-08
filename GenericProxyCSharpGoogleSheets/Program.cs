@@ -21,8 +21,7 @@ namespace GoogleSheetsAPI4_v1console
 
             using (var stream = new FileStream("Secret/credentials.json", FileMode.Open, FileAccess.Read))
             {
-                string credPath = System.Environment.GetFolderPath(
-                    System.Environment.SpecialFolder.Personal);
+                string credPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
 
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
@@ -34,11 +33,7 @@ namespace GoogleSheetsAPI4_v1console
             }
 
             // Create Google Sheets API service.
-            var service = new SheetsService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = ApplicationName,
-            });
+            var service = new SheetsService(new BaseClientService.Initializer(){ HttpClientInitializer = credential, ApplicationName = ApplicationName });
 
             // WIP Google Sheet
             // https://docs.google.com/spreadsheets/d/1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4/edit#gid=0

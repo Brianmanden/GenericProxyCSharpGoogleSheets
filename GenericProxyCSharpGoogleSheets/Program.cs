@@ -40,10 +40,12 @@ namespace GoogleSheetsAPI4_v1console
                 ApplicationName = ApplicationName,
             });
 
-            String spreadsheetId = "1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4";
-            String writeRange = "Ark1!A2:ZZ";
+            // WIP Google Sheet
+            // https://docs.google.com/spreadsheets/d/1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4/edit#gid=0
+            string spreadsheetId = "1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4";
+            string writeRange = "Ark1!A2:ZZ";
 
-            var objList = new List<object>(){ "Col1", "Col2", "Col3", "Col4", "Col5", "My NEW Cell Text" };
+            var objList = new List<object>(){ DateTime.Now.ToLocalTime(), "Col2", "Col3", "Col4", "Col5", "My NEW Cell Text" };
 
             ValueRange valueDataRange = new ValueRange() { MajorDimension = "ROWS", Range = writeRange, Values = new List<IList<object>> { objList } };
 
@@ -54,7 +56,6 @@ namespace GoogleSheetsAPI4_v1console
             AppendValuesResponse appendValueResponse = appendRequest.Execute();
 
             Console.WriteLine(JsonConvert.SerializeObject(valueDataRange));
-            Console.WriteLine("done!");
             Console.ReadLine();
         }
     }

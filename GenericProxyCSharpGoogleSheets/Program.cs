@@ -36,22 +36,49 @@ namespace GoogleSheetsAPI4_v1console
             var service = new SheetsService(new BaseClientService.Initializer(){ HttpClientInitializer = credential, ApplicationName = ApplicationName });
 
             // WIP Google Sheet
+            // Spread sheet used for storing configuration etc.
             // https://docs.google.com/spreadsheets/d/1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4/edit#gid=0
-            string spreadsheetId = "1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4";
+            string rootSpreadsheetId = "1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4";
+
+            // read configuration
+            string readRange = "config!A2:ZZ";
+
+            SpreadsheetsResource.ValuesResource.GetRequest configRequest = service.Spreadsheets.Values.Get(rootSpreadsheetId, readRange);
+            ValueRange configurations = configRequest.Execute();
+            Console.WriteLine(JsonConvert.SerializeObject(configurations));
+            Console.ReadLine();
+
+            // Append config
             string writeRange = "Ark2!A2:ZZ";
-
-            var objList = new List<object>(){ DateTime.Now.ToLocalTime(), "Col2", "Col3", "Col4", "Col5", "My NEW Cell Text" };
-
+            var objList = new List<object>() { DateTime.Now.ToLocalTime(), "Col2", "Col3", "Col4", "Col5", "My NEW Cell Text" };
             ValueRange valueDataRange = new ValueRange() { MajorDimension = "ROWS", Range = writeRange, Values = new List<IList<object>> { objList } };
-
-            SpreadsheetsResource.ValuesResource.AppendRequest appendRequest = service.Spreadsheets.Values.Append(valueDataRange, spreadsheetId, writeRange);
+            SpreadsheetsResource.ValuesResource.AppendRequest appendRequest = service.Spreadsheets.Values.Append(valueDataRange, rootSpreadsheetId, writeRange);
             appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
             appendRequest.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
 
+            // Append execute
             AppendValuesResponse appendValueResponse = appendRequest.Execute();
 
             Console.WriteLine(JsonConvert.SerializeObject(valueDataRange));
             Console.ReadLine();
+        }
+
+        // CRUD methods (WIP)
+        private static void Create()
+        {
+            // Create
+        }
+        private static void Read()
+        {
+            // Read
+        }
+        private static void Update()
+        {
+            // Update
+        }
+        private static void Delete()
+        {
+            // Delete
         }
     }
 }

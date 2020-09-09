@@ -12,3 +12,4 @@
 # Refactoring
 * Move code into functions
 * Tidy up main execution flow
+* Write credentials.json to other location better suited for project so it can run on webserver

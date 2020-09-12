@@ -21,7 +21,8 @@ namespace GoogleSheetsAPI4_v1console
 
             using (var stream = new FileStream("Secret/credentials.json", FileMode.Open, FileAccess.Read))
             {
-                string credPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+                //string credPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+                string credPath = System.Environment.CurrentDirectory;
 
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
@@ -46,11 +47,22 @@ namespace GoogleSheetsAPI4_v1console
             SpreadsheetsResource.ValuesResource.GetRequest configRequest = service.Spreadsheets.Values.Get(rootSpreadsheetId, readRange);
             ValueRange configurations = configRequest.Execute();
             Console.WriteLine(JsonConvert.SerializeObject(configurations));
-            Console.ReadLine();
 
-            // Append config
-            string writeRange = "Ark2!A2:ZZ";
-            var objList = new List<object>() { DateTime.Now.ToLocalTime(), "Col2", "Col3", "Col4", "Col5", "My NEW Cell Text" };
+            foreach (var configuration in configurations.Values)
+            {
+                string documentAlias = configuration[0].ToString();
+                string documentID = configuration[1].ToString();
+                string sheetName = configuration[2].ToString();
+
+                Console.WriteLine($"document alias: {documentAlias},  document ID: {documentID}, sheet name: {sheetName}");
+            }
+
+            // Console.ReadLine();
+
+            // Append row to sheet
+            //string writeRange = "Ark2!A2:ZZ";
+            string writeRange = configurations.Values[0][2].ToString() + "!A2:ZZ";
+            var objList = new List<object>() { DateTime.Now.ToLocalTime(), "My NEW Cell Text" };
             ValueRange valueDataRange = new ValueRange() { MajorDimension = "ROWS", Range = writeRange, Values = new List<IList<object>> { objList } };
             SpreadsheetsResource.ValuesResource.AppendRequest appendRequest = service.Spreadsheets.Values.Append(valueDataRange, rootSpreadsheetId, writeRange);
             appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
@@ -60,7 +72,7 @@ namespace GoogleSheetsAPI4_v1console
             AppendValuesResponse appendValueResponse = appendRequest.Execute();
 
             Console.WriteLine(JsonConvert.SerializeObject(valueDataRange));
-            Console.ReadLine();
+            // Console.ReadLine();
         }
 
         // CRUD methods (WIP)

@@ -19,6 +19,10 @@ namespace GoogleSheetsAPI4_v1console
 
         static void Main(string[] args)
         {
+            // Google sheet used for storing configuration etc.
+            // https://docs.google.com/spreadsheets/d/1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4/edit#gid=0
+            string rootSpreadsheetId = "1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4";
+            string rootSpreadsheetReadRange = "config!A2:ZZ";
             UserCredential credential;
 
             using (var stream = new FileStream("Secret/credentials.json", FileMode.Open, FileAccess.Read))
@@ -38,16 +42,8 @@ namespace GoogleSheetsAPI4_v1console
             // Create Google Sheets API service.
             service = new SheetsService(new BaseClientService.Initializer(){ HttpClientInitializer = credential, ApplicationName = ApplicationName });
 
-            // WIP Google Sheet
-            // Spread sheet used for storing configuration etc.
-            // https://docs.google.com/spreadsheets/d/1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4/edit#gid=0
-            string rootSpreadsheetId = "1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4";
-
-            // read configuration
-            string readRange = "config!A2:ZZ";
-
-            SpreadsheetsResource.ValuesResource.GetRequest configRequest = service.Spreadsheets.Values.Get(rootSpreadsheetId, readRange);
-            ValueRange configurations = configRequest.Execute();
+            // read configurations
+            ValueRange configurations = Read(rootSpreadsheetId, rootSpreadsheetReadRange);
             Console.WriteLine(JsonConvert.SerializeObject(configurations));
 
             foreach (var configuration in configurations.Values)
@@ -80,9 +76,10 @@ namespace GoogleSheetsAPI4_v1console
             appendRequest.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
             return appendRequest.Execute();
         }
-        private static void Read()
+        private static ValueRange Read(string rootSpreadsheetId, string rootSpreadsheetReadRange)
         {
-            // Read
+            SpreadsheetsResource.ValuesResource.GetRequest configRequest = service.Spreadsheets.Values.Get(rootSpreadsheetId, rootSpreadsheetReadRange);
+            return configRequest.Execute();
         }
         private static void Update()
         {

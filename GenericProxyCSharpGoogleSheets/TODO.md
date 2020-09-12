@@ -17,4 +17,7 @@
 * Move code into functions
 * Tidy up main execution flow
 * Write credentials.json to other location better suited for project so it can run on webserver
-** Can obj/Debug be used ?
+  * Can obj/Debug be used ?
+  * https://stackoverflow.com/questions/57863574/google-sheets-api-v4-not-working-in-iis-server
+* Use Service Account Keys !
+  * https://stackoverflow.com/questions/57863574/google-sheets-api-v4-not-working-in-iis-server

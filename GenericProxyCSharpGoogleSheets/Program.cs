@@ -15,13 +15,20 @@ namespace GoogleSheetsAPI4_v1console
     {
         static string[] Scopes = { SheetsService.Scope.Spreadsheets };
         static string ApplicationName = "GenericProxyCSharpGoogleSheets";
+        private static SheetsService service;
+
         static void Main(string[] args)
         {
+            // Google sheet used for storing configuration etc.
+            // https://docs.google.com/spreadsheets/d/1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4/edit#gid=0
+            string rootSpreadsheetId = "1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4";
+            string rootSpreadsheetReadRange = "config!A2:ZZ";
             UserCredential credential;
 
             using (var stream = new FileStream("Secret/credentials.json", FileMode.Open, FileAccess.Read))
             {
-                string credPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+                //string credPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+                string credPath = System.Environment.CurrentDirectory;
 
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
@@ -33,44 +40,46 @@ namespace GoogleSheetsAPI4_v1console
             }
 
             // Create Google Sheets API service.
-            var service = new SheetsService(new BaseClientService.Initializer(){ HttpClientInitializer = credential, ApplicationName = ApplicationName });
+            service = new SheetsService(new BaseClientService.Initializer(){ HttpClientInitializer = credential, ApplicationName = ApplicationName });
 
-            // WIP Google Sheet
-            // Spread sheet used for storing configuration etc.
-            // https://docs.google.com/spreadsheets/d/1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4/edit#gid=0
-            string rootSpreadsheetId = "1sxsRFCFgfuxGWRFjZlt_twNZaNrVtysuFBkCNkQk1U4";
-
-            // read configuration
-            string readRange = "config!A2:ZZ";
-
-            SpreadsheetsResource.ValuesResource.GetRequest configRequest = service.Spreadsheets.Values.Get(rootSpreadsheetId, readRange);
-            ValueRange configurations = configRequest.Execute();
+            // read configurations
+            ValueRange configurations = Read(rootSpreadsheetId, rootSpreadsheetReadRange);
             Console.WriteLine(JsonConvert.SerializeObject(configurations));
-            Console.ReadLine();
 
-            // Append config
-            string writeRange = "Ark2!A2:ZZ";
-            var objList = new List<object>() { DateTime.Now.ToLocalTime(), "Col2", "Col3", "Col4", "Col5", "My NEW Cell Text" };
-            ValueRange valueDataRange = new ValueRange() { MajorDimension = "ROWS", Range = writeRange, Values = new List<IList<object>> { objList } };
-            SpreadsheetsResource.ValuesResource.AppendRequest appendRequest = service.Spreadsheets.Values.Append(valueDataRange, rootSpreadsheetId, writeRange);
-            appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
-            appendRequest.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
+            foreach (var configuration in configurations.Values)
+            {
+                string documentAlias = configuration[0].ToString();
+                string documentID = configuration[1].ToString();
+                string sheetName = configuration[2].ToString();
 
-            // Append execute
-            AppendValuesResponse appendValueResponse = appendRequest.Execute();
+                Console.WriteLine($"document alias: {documentAlias},  document ID: {documentID}, sheet name: {sheetName}");
+            }
 
-            Console.WriteLine(JsonConvert.SerializeObject(valueDataRange));
+            List<Object> objList = new List<object>() { DateTime.Now.ToLocalTime(), "My NEW Cell Text" };
+
+            // Append row to sheet using Create method
+            var appendValueResponse = Create(configurations.Values[1][1].ToString(), configurations.Values[1][2].ToString(), objList);
+
+            Console.WriteLine(JsonConvert.SerializeObject(appendValueResponse));
             Console.ReadLine();
         }
 
         // CRUD methods (WIP)
-        private static void Create()
+
+        // Append row to sheet
+        private static AppendValuesResponse Create(string documentID, string sheetName, List<Object> objList)
         {
-            // Create
+            string writeRange = sheetName + "!A2:ZZ";
+            ValueRange valueDataRange = new ValueRange() { MajorDimension = "ROWS", Range = writeRange, Values = new List<IList<object>> { objList }};
+            SpreadsheetsResource.ValuesResource.AppendRequest appendRequest = service.Spreadsheets.Values.Append(valueDataRange, documentID, writeRange);
+            appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
+            appendRequest.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
+            return appendRequest.Execute();
         }
-        private static void Read()
+        private static ValueRange Read(string rootSpreadsheetId, string rootSpreadsheetReadRange)
         {
-            // Read
+            SpreadsheetsResource.ValuesResource.GetRequest configRequest = service.Spreadsheets.Values.Get(rootSpreadsheetId, rootSpreadsheetReadRange);
+            return configRequest.Execute();
         }
         private static void Update()
         {

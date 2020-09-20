@@ -277,6 +277,73 @@ namespace GenericProxyCSharpGoogleSheets.Controllers
         }
 
         //
+        // GET: /Manage/ChangeRootSheet
+        public ActionResult ChangeRootSheetId()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Manage/ChangeRootSheet
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChangeRootSheetId(ChangeRootSheetViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            
+            //TODO: Code test for comparison of new Root Sheet Id and confirmation Root Sheet Id
+
+            //var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+            //if (result.Succeeded)
+            //{
+            //    var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            //    if (user != null)
+            //    {
+            //        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+            //    }
+            //    return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
+            //}
+            //AddErrors(result);
+            return View(model);
+        }
+
+        //
+        // GET: /Manage/SetRootSheetId
+        public ActionResult SetRootSheetId()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Manage/SetRootSheetId
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> SetRootSheetId(SetRootSheetViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                //TODO: Code here :)
+                //var result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+                //if (result.Succeeded)
+                //{
+                //    var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+                //    if (user != null)
+                //    {
+                //        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                //    }
+                //    return RedirectToAction("Index", new { Message = ManageMessageId.SetPasswordSuccess });
+                //}
+                //AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        //
         // GET: /Manage/ManageLogins
         public async Task<ActionResult> ManageLogins(ManageMessageId? message)
         {

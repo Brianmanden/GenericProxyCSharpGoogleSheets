@@ -12,6 +12,7 @@ namespace GenericProxyCSharpGoogleSheets.Models
         public string PhoneNumber { get; set; }
         public bool TwoFactor { get; set; }
         public bool BrowserRemembered { get; set; }
+        public string RootSheetId { get; set; }
     }
 
     public class ManageLoginsViewModel
@@ -56,6 +57,38 @@ namespace GenericProxyCSharpGoogleSheets.Models
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class ChangeRootSheetViewModel
+    {
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Current Root Sheet Id")]
+        public string OldRootSheetId { get; set; }
+
+        [Required]
+        [StringLength(44, ErrorMessage = "The {0} must be exactly {2} characters long.", MinimumLength = 44)]
+        [DataType(DataType.Text)]
+        [Display(Name = "New Root Sheet Id")]
+        public string NewRootSheetId { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Confirm new Root Sheet Id")]
+        [Compare("NewRootSheetId", ErrorMessage = "The new Root Sheet Id and confirmation Root Sheet Id do not match.")]
+        public string ConfirmRootSheetId { get; set; }
+    }
+    public class SetRootSheetViewModel
+    {
+        [Required]
+        [StringLength(44, ErrorMessage = "The {0} must be exactly {2} characters long.", MinimumLength = 44)]
+        [DataType(DataType.Text)]
+        [Display(Name = "New Root Sheet Id")]
+        public string NewRootSheetId { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Confirm new Root Sheet Id")]
+        [Compare("NewRootSheetId", ErrorMessage = "The new Root Sheet Id and confirmation Root Sheet Id do not match.")]
+        public string ConfirmRootSheetId { get; set; }
     }
 
     public class AddPhoneNumberViewModel
